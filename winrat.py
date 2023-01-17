@@ -1,3 +1,7 @@
+#todo:
+# encrypt all incoming and outgoing data
+# add public/private key to verify if the configuration is from the owner
+
 import importlib
 import threading
 import time
@@ -91,6 +95,8 @@ def store_result(file_name, data):
         file.write(data.encode())
 
 def module_runner(mod, name):
+    #todo
+    # add functionality to restart some modules depending on options interval of module from configuration file
     result = mod.run(LASTRELOAD, RELOADINTERVAL)
     file_name = create_file_name(name)
 
@@ -100,6 +106,9 @@ def module_runner(mod, name):
         os.remove(f"data/{file_name}")
 
 def load_modules():
+    #todo
+    # delete the source files after imported successfully
+    # disimport the running modules which are not in the modules list  
     for name in module_names:
         importlib.invalidate_caches()
         mod = importlib.import_module(f"modules.{name}")
