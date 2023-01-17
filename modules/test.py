@@ -3,3 +3,4 @@ def hw():
 
 def run(last_reload, reload_interval):
     hw()
+    return "hello world"
