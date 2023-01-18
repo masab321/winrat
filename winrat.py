@@ -10,9 +10,9 @@ import os
 
 from uuid import getnode as get_mac
 
-LASTRELOAD = time.time()
-RELOADINTERVAL = 5 
+SYSTEMRELOADINTERVAL = 40
 
+last_reload = time.time()
 module_names = dict()
 download_links = {"http://192.168.1.110:8000/"} 
 upload_links = {"http://192.168.1.110:8000/"}
@@ -83,7 +83,7 @@ def upload_result(file_name):
             return True
 
     print("Upload failed for all servers")
-    return True
+    return False
 
 def store_result(file_name, data):
     if data is None:
@@ -94,16 +94,36 @@ def store_result(file_name, data):
     with open(f"data/{file_name}", "wb") as file:
         file.write(data.encode())
 
-def module_runner(mod, name):
-    #todo
-    # add functionality to restart some modules depending on options interval of module from configuration file
-    result = mod.run(LASTRELOAD, RELOADINTERVAL)
-    file_name = create_file_name(name)
+def get_module_reload_time(r_time):
+    global last_reload
+    next_reload = last_reload + SYSTEMRELOADINTERVAL
+    reload_time = 0
 
-    store_result(file_name, result)
-    upload_successful = upload_result(file_name)
-    if upload_successful:
-        os.remove(f"data/{file_name}")
+    if time.time() + r_time < next_reload:
+        reload_time = r_time 
+    else:
+        reload_time = next_reload - time.time()
+
+    return int(reload_time) if int(reload_time) > 0 else -1
+
+def module_runner(mod, name):
+    global last_reload
+
+    while time.time() < last_reload + SYSTEMRELOADINTERVAL:
+        module_reload_time = get_module_reload_time(module_names[name])
+        if module_reload_time <= 2:
+            return
+
+        result = mod.run(module_reload_time)
+        result = result.strip()
+        if len(result) == 0:
+            continue
+
+        file_name = create_file_name(name)
+        store_result(file_name, result)
+        upload_successful = upload_result(file_name)
+        if upload_successful:
+            os.remove(f"data/{file_name}")
 
 def load_modules():
     #todo
@@ -119,7 +139,7 @@ def load_modules():
             
 if __name__ == '__main__':
     while True:
-        LASTRELOAD = time.time()
+        last_reload = time.time()
 
         download_configuration()
         update_configuration()
@@ -127,4 +147,4 @@ if __name__ == '__main__':
         download_modules()
         load_modules()
 
-        time.sleep(RELOADINTERVAL)
+        time.sleep(SYSTEMRELOADINTERVAL)
