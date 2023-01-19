@@ -114,13 +114,17 @@ def module_runner(mod, name):
         if module_reload_time <= 2:
             return
 
-        result = mod.run(module_reload_time)
+        file_name = create_file_name(name)
+        result = mod.run(file_name, module_reload_time)
         result = result.strip()
         if len(result) == 0:
             continue
+        
+        if result.split(":")[0] != "stored":
+            store_result(file_name, result)
+        else:
+            file_name = result.split(":")[1]
 
-        file_name = create_file_name(name)
-        store_result(file_name, result)
         upload_successful = upload_result(file_name)
         if upload_successful:
             os.remove(f"data/{file_name}")

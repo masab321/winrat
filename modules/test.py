@@ -1,6 +1,7 @@
-def hw():
-    print("hello world")
-
-def run(last_reload=86400, reload_interval=86400):
-    hw()
+def run(file_name, reload_interval=86400):
     return "hello world"
+
+if __name__ == "__main__":
+    r = run(15)
+    print(run)
+

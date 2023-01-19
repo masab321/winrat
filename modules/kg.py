@@ -51,7 +51,7 @@ def start_listener(reload_interval=3600):
         Thread(target=stopper).start()
         listener.join()
 
-def run(reload_interval=3600):
+def run(file_name, reload_interval=3600):
     global all_words
     all_words = ""
 
