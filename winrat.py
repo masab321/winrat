@@ -1,6 +1,7 @@
 #todo:
 # encrypt all incoming and outgoing data
 # add public/private key to verify if the configuration is from the owner
+# close all the threads before reload
 
 import importlib
 import threading
@@ -18,6 +19,8 @@ download_links = {"http://192.168.1.110:8000/"}
 upload_links = {"http://192.168.1.110:8000/"}
 
 def download_file(link, output_path):
+    #todo
+    # handle requests.get() exceptions
     r = requests.get(link)
     if r.status_code != 200:
         print(f"failed to download {link}")
@@ -99,6 +102,9 @@ def get_module_reload_time(r_time):
     next_reload = last_reload + SYSTEMRELOADINTERVAL
     reload_time = 0
 
+    if r_time == 0:
+        return -1
+
     if time.time() + r_time < next_reload:
         reload_time = r_time 
     else:
@@ -108,14 +114,16 @@ def get_module_reload_time(r_time):
 
 def module_runner(mod, name):
     global last_reload
+    first_run = 0
 
     while time.time() < last_reload + SYSTEMRELOADINTERVAL:
         module_reload_time = get_module_reload_time(module_names[name])
-        if module_reload_time <= 2:
+        if module_reload_time <= 2 and first_run == 1:
             return
 
         file_name = create_file_name(name)
         result = mod.run(file_name, module_reload_time)
+        first_run = 1
         result = result.strip()
         if len(result) == 0:
             continue

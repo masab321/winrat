@@ -2,17 +2,19 @@ A simple windows remote access tool.
 
 Main Features:
 
-    1. Keylogger
-    2. Ransomeware
-    3. Screenshot
-    4. Webcam
-    5. Remote shell
+    1. Keylogger --done
+    2. Ransomware
+    3. Screenshot --done
+    4. Screenrecord --done 
+    5. Remote shell --done
+    6. System Informations
 
 Todo:
 
     1. Implement the main engine
-        a. Download the configuration file
-        b. Download the modules
-        c. Upload the result of modules
+        a. Download the configuration file --done
+        b. Download the modules --done
+        c. Upload the result of modules --done
+        d. Encrypt data before upload and download
     
     2. Implement the modules
