@@ -78,6 +78,7 @@ def create_file_name(name):
     file_name = hex(get_mac())[2:] + "_" + hex(int(time.time()))[2:] + "_" + name
     return ("O" + file_name)
 
+#move this function to util file
 def upload_result(file_name):
     for link in upload_links:
         r = requests.post(link, files={"file": open(f"data/{file_name}", "rb")})

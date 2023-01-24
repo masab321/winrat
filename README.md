@@ -3,7 +3,7 @@ A simple windows remote access tool.
 Main Features:
 
     1. Keylogger --done
-    2. Ransomware
+    2. Ransomware --done
     3. Screenshot --done
     4. Screenrecord --done 
     5. Remote shell --done
@@ -16,5 +16,7 @@ Todo:
         b. Download the modules --done
         c. Upload the result of modules --done
         d. Encrypt data before upload and download
+        e. refactor all modules and handle corner cases
+        f. update server to decline any other kind of requests
     
     2. Implement the modules
