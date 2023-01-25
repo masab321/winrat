@@ -7,7 +7,7 @@ Main Features:
     3. Screenshot --done
     4. Screenrecord --done 
     5. Remote shell --done
-    6. System Informations
+    6. System Informations --done
 
 Todo:
 

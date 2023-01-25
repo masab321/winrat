@@ -1,6 +1,4 @@
 #todo:
-# encrypt all incoming and outgoing data
-# add public/private key to verify if the configuration is from the owner
 # close all the threads before reload
 
 import importlib
@@ -8,6 +6,7 @@ import threading
 import time
 import requests
 import os
+import encrypt_data
 
 from uuid import getnode as get_mac
 
@@ -80,6 +79,8 @@ def create_file_name(name):
 
 #move this function to util file
 def upload_result(file_name):
+    # check if the file is already encrypted
+    encrypt_data.encrypt_file(f"data/{file_name}")
     for link in upload_links:
         r = requests.post(link, files={"file": open(f"data/{file_name}", "rb")})
         if r.status_code == 201:
@@ -97,7 +98,7 @@ def store_result(file_name, data):
         os.makedirs("data")
     with open(f"data/{file_name}", "wb") as file:
         file.write(data.encode())
-
+    
 def get_module_reload_time(r_time):
     global last_reload
     next_reload = last_reload + SYSTEMRELOADINTERVAL
