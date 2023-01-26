@@ -1,3 +1,5 @@
+# Do not use this server live. Upgrade to handle only get and post request. 
+# Creating only an API server will work
 import os
 import cgi
 import http.server as server
@@ -11,16 +13,12 @@ class HTTPRequestHandler(server.SimpleHTTPRequestHandler):
     def do_PUT(self):
         """Save a file following a HTTP PUT request"""
         filename = os.path.basename(self.path)
-        print(self.headers)
-        print(self.rfile)
-        # Don't overwrite files
         if os.path.exists(filename):
             self.send_response(409, 'Conflict')
             self.end_headers()
             reply_body = '"%s" already exists\n' % filename
             self.wfile.write(reply_body.encode('utf-8'))
             return
-        print("filename = %s" %filename)
 
         file_length = int(self.headers['Content-Length'])
         read = 0

