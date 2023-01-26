@@ -3,12 +3,16 @@ Dynamically import and run modules. Uploads the module results after module inte
 So it only needs to install the winrat.py file first to start RAT.
 
 winrat.conf:
+
     Usage: <operation> <name/link> <reload interval>
-    Example: m screenshot 200 # m = module
+    
+    Example: 
+             m screenshot 200 # m = module
              d http://test.com:8000/ # d = download link. Module and configuration download link
              u http://test.com:8000/ # u = upload link. Results upload link
 
 Modules implemented:
+
     1. Keylogger:
         * Separate words when newline or space is pressed or no key pressed for 15 seconds
     
@@ -39,6 +43,7 @@ Modules implemented:
 Server:
     A very minimal http server is created to handle the request. A simple api server will suffice.
     Functionalities:
+    
         1. GET requests:
             * Handle request for configuration and modules files
             * Handle request for ranswomware decryption key
